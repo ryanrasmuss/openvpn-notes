@@ -47,13 +47,13 @@ Build server keys: ``./build-key-server server``
 
 Generate Diffie-Hellman parameters: ``./build-dh``
 
-** Two ways to generate client certificates **
+**Two ways to generate client certificates**
 
 1. No password: ./build-key client1
 
 2. Password: ./build-key-pass client1
 
-** Copy our keys and certs to the appropriate directory **
+**Copy our keys and certs to the appropriate directory**
 
 ```
 cp keys/server.crt /etc/openvpn/
@@ -191,4 +191,20 @@ Download the client ovpn profile to your machine.
 
 You may need to copy the ta.key to the local client.
 
+### What needs to be saved for automation
 
+/etc/openvpn/server.conf
+/etc/openvpn/ca.crt
+/etc/openvpn/dh2048.pem
+/etc/openvpn/server.crt
+/etc/openvpn/server.key
+/etc/openvpn/ta.key
+
+client1.ovpn
+ta.key
+
+script to do...
+
+ip forwarding
+iptables
+systemctl openvpn@server
