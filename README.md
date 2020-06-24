@@ -3,7 +3,7 @@
 
 ### Dependencies
 
-Deploy any debian based images on AWS. Ubuntu is 18.04 LTS is a good choice.
+Deploy any debian based images on AWS. Ubuntu is 18.04 LTS is a good choice and will be used in this guide.
 
 ```
 sudo apt update -y
@@ -15,7 +15,7 @@ cd ca/
 
 ### Build the CA
 
-need to copy custom vars to /home/ubuntu/ca/vars
+Edit ``/home/ubuntu/ca/vars`` to your liking (see below):
 
 vars file:
 
@@ -31,26 +31,29 @@ export KEY_EMAIL="me@myhost.mydomain"
 export KEY_OU="MyOrganizationalUnit"
 ```
 
-Edit above to your need
+Now link the openssl config
 
 ``ln -s openssl-1.0.0.cnf openssl.cnf``
 
-(not as root below)
+Source the vars file: ``source vars``
 
-```
-source ./vars
+Clean the environment: ``./clean-all``
 
-./clean-all
+Generate the certificate authority: ``./build-ca``
 
-./build-key-server server
+### Generate Server and Client Certificate and Keys
 
-./build-dh
+Build server keys: ``./build-key-server server``
 
-./build-key client1 (no password) or ./build-key-pass client1 (with password)
-```
+Generate Diffie-Hellman parameters: ``./build-dh``
 
+** Two ways to generate client certificates **
 
-Move required keys to openvpn config via...
+1. No password: ./build-key client1
+
+2. Password: ./build-key-pass client1
+
+** Copy our keys and certs to the appropriate directory **
 
 ```
 cp keys/server.crt /etc/openvpn/
@@ -61,7 +64,12 @@ cp keys/dh2048.pem /etc/openvpn/
 
 ### OpenVPN Server Configurations
 
-Edit the server.conf with the following
+Copy the pre-built config file from OpenVPN: ``zcat /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz > /etc/openvpn/server.conf``
+
+
+Edit the ``/etc/openvpn/server.conf`` with the following
+
+Mostly the edits should be uncommenting, adding IP to local, and adding HMAC.
 
 ```
 local [ip or hostname.com] <-- in aws, its the LOCAL PUBLIC IP
@@ -83,8 +91,7 @@ Generate TLS key via...
 
 ```openvpn --genkey --secret /etc/openvpn/ta.key```
 
-
-(may need to reboot before getting this to work)
+Start the OpenVPN service (may need to reboot before getting this to work)
 
 ```
 systemctl start openvpn@server
@@ -92,6 +99,10 @@ systemctl status openvpn@server
 ```
 
 If there is a problem with starting the service, check the logs are ``/var/log/openvpn/openvpn.log``
+
+
+### Setting up routing
+
 
 Allow ip forwarding via...
 
@@ -117,16 +128,16 @@ Make them persist
 ``apt install iptables-persistent``
 
 
-Generate Client Profiles (.ovpn Files)
+### Generate Client Profiles (.ovpn Files)
 
 ```
 mkdir ca/clientprofiles && cd ca/
 cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf clientprofiles/client1.ovpn
 ```
 
-### Build Client Profiles
+### Configure Client Profiles
 
-Edit the config as following:
+Edit the config with your server IP as following:
 
 ```
 remote my-server-1 1194 with ...
