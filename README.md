@@ -211,6 +211,8 @@ iptables
 systemctl openvpn@server
 ```
 
+Will need to edit openserver's configuration file to local [new ip] and the client file as well.
+
 ### Logs
 
 ``/var/log/openvpn/openvpn-status.log`` list connected users with: name,ip,bytes,recv,sent,connected-since
