@@ -193,6 +193,7 @@ You may need to copy the ta.key to the local client.
 
 ### What needs to be saved for automation
 
+```
 /etc/openvpn/server.conf
 /etc/openvpn/ca.crt
 /etc/openvpn/dh2048.pem
@@ -208,3 +209,4 @@ script to do...
 ip forwarding
 iptables
 systemctl openvpn@server
+```
