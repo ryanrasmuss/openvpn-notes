@@ -210,3 +210,11 @@ ip forwarding
 iptables
 systemctl openvpn@server
 ```
+
+### Logs
+
+``/var/log/openvpn/openvpn-status.log`` list connected users with: name,ip,bytes,recv,sent,connected-since
+
+``/var/log/openvpn/openvpn.log`` contains system logs from openvpn server
+
+``/var/log/openvpn/ipp.txt`` lists addresses assigned to vpn users (office mode essentially)
