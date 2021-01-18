@@ -1,4 +1,4 @@
-# OpenVPN Setup on AWS
+# OpenVPN Setup on AWS (or anywhere)
 
 
 ### Dependencies
@@ -31,9 +31,9 @@ export KEY_EMAIL="me@myhost.mydomain"
 export KEY_OU="MyOrganizationalUnit"
 ```
 
-Now link the openssl config
+Set the values to whatever you would like. You can skip any field.
 
-``ln -s openssl-1.0.0.cnf openssl.cnf``
+Now link the openssl config: ``ln -s openssl-1.0.0.cnf openssl.cnf``
 
 Source the vars file: ``source vars``
 
