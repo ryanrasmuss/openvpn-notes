@@ -1,4 +1,4 @@
-# OpenVPN Setup on AWS
+# OpenVPN Setup on AWS (or anywhere)
 
 
 ### Dependencies
@@ -31,9 +31,9 @@ export KEY_EMAIL="me@myhost.mydomain"
 export KEY_OU="MyOrganizationalUnit"
 ```
 
-Now link the openssl config
+Set the values to whatever you would like. You can skip any field.
 
-``ln -s openssl-1.0.0.cnf openssl.cnf``
+Now link the openssl config: ``ln -s openssl-1.0.0.cnf openssl.cnf``
 
 Source the vars file: ``source vars``
 
@@ -86,6 +86,46 @@ log-append /var/log/openvpn/openvpn.log
 #Enable HMAC
 auth SHA256
 ```
+
+
+If you want to route all traffic from clients enable the following in the ``/etc/openvpn/server.conf``
+
+```
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 208.67.222.222"
+push "dhcp-option DNS 208.67.220.220"
+```
+
+If you do not want to route all traffic (you want split-vpn tunnel) keep those fields (redirect-gateway) commented out and simply add the routes to access the subnet behind the VPN server.
+
+```
+;push "redirect-gateway def1 bypass-dhcp"
+;push "dhcp-option DNS 208.67.222.222"
+;push "dhcp-option DNS 208.67.220.220"
+
+push "route 172.23.0.0 255.255.255.0"
+```
+
+The route ``172.23.0.0/24`` is behind the vpn server and is what we want our clients to access.
+
+To allow multiple clients with same CN to connect to the vpn server uncomment the ``duplicate-cn`` option
+
+```
+# Uncomment this directive if multiple clients
+# might connect with the same certificate/key
+# files or common names.  This is recommended
+# only for testing purposes.  For production use,
+# each client should have its own certificate/key
+# pair.
+#
+# IF YOU HAVE NOT GENERATED INDIVIDUAL
+# CERTIFICATE/KEY PAIRS FOR EACH CLIENT,
+# EACH HAVING ITS OWN UNIQUE "COMMON NAME",
+# UNCOMMENT THIS LINE OUT.
+duplicate-cn
+
+```
+
 
 Generate TLS key via...
 
